@@ -112,3 +112,8 @@ def plot_waveform(message, frame, titulo):
         plot_waveform.canvas = FigureCanvasTkAgg(plot_waveform.fig, master=frame)
         plot_waveform.canvas.draw()
         plot_waveform.canvas.get_tk_widget().pack(pady=5)
+
+def pega_ip():
+    hostname = socket.gethostname()
+    ip_adress = socket.gethostbyname(hostname)
+    return ip_adress
