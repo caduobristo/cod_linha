@@ -3,7 +3,7 @@ import threading
 import tkinter as tk
 from tkinter import scrolledtext
 import matplotlib.pyplot as plt
-from funcoes import decodifica_mensagem, update_text_area, plot_waveform, pega_ip
+from funcoes import ami_encode, decodifica_mensagem, update_text_area, plot_waveform, pega_ip
 
 def start_server(host: str, port: str):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -16,11 +16,10 @@ def start_server(host: str, port: str):
             conn, addr = server_socket.accept()
             data = conn.recv(4096).decode('utf-8')
             if data: 
-                plot_waveform(data, frame, "Forma de onda do dado recebido!")
                 msg, key = data.split('|')
-                proc_decod = decodifica_mensagem(msg, key)
+                proc_decod, msg_original = decodifica_mensagem(msg, key)
+                plot_waveform(data, frame, "Forma de onda do dado recebido!")
                 update_text_area(proc_decod, text_area)
-    
     thread = threading.Thread(target=accept_connections)
     thread.daemon = True
     thread.start()

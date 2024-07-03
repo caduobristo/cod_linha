@@ -25,7 +25,7 @@ frame.pack(pady=20)
 tk.Label(frame, text="IP do Servidor:").pack(pady=5)
 entry_host = tk.Entry(frame, width=50)
 entry_host.pack(pady=5)
-entry_host.insert(0, '192.168.0.13')
+entry_host.insert(0, '192.168.137.1')
 
 # Entrada para a porta do servidor
 tk.Label(frame, text="Porta do Servidor:").pack(pady=5)

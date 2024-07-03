@@ -51,7 +51,7 @@ def decodifica_mensagem(msg: str, key: str):
 
     proc_decod = f"Mensagem recebida: {msg}\nMensagem decodificada: {msg_decod}\nMensagem criptografada: {msg_crypt}\nMensagem original: {msg_original}\n"
 
-    return proc_decod
+    return proc_decod, msg_original
 
 def codifica_mensagem(msg: str):
     caracteres = string.ascii_letters + string.digits + string.punctuation
@@ -73,7 +73,7 @@ def send_data(host: str, port: str, msg: str, text_area, frame):
             client_socket.connect((host, port))
             client_socket.sendall(data.encode())
             update_text_area(proc_cod, text_area)
-            plot_waveform(data, frame, "Forma de onda do dado enviado!")
+            plot_waveform(data, frame, "0 de onda do dado enviado!")
     except ConnectionRefusedError:
         update_text_area("Conexão negada!", text_area)
     
