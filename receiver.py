@@ -1,9 +1,28 @@
-import socket
-import threading
-import tkinter as tk
-from tkinter import scrolledtext
-import matplotlib.pyplot as plt
-from funcoes import ami_encode, decodifica_mensagem, update_text_area, plot_waveform, pega_ip
+from common_imports import *
+
+def ami_decode(data):
+    decode = ''
+
+    for bit in data:
+        if bit == '0':
+            decode += '0'
+        elif bit == '1':
+            decode += '1'
+
+    return decode
+
+def binary_to_string(binary):
+    string = ''.join(chr(int(binary[byte:byte+8], 2)) for byte in range(0, len(binary), 8))
+    return string
+
+def decodifica_mensagem(msg: str, key: str):
+    msg_decod = ami_decode(msg)
+    msg_crypt = binary_to_string(msg_decod)
+    msg_original = encrypt_decrypt(msg_crypt, key)
+
+    proc_decod = f"Mensagem recebida: {msg}\nMensagem decodificada: {msg_decod}\nMensagem criptografada: {msg_crypt}\nMensagem original: {msg_original}\n"
+
+    return proc_decod
 
 def start_server(host: str, port: str):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -17,8 +36,8 @@ def start_server(host: str, port: str):
             data = conn.recv(4096).decode('utf-8')
             if data: 
                 msg, key = data.split('|')
-                proc_decod, msg_original = decodifica_mensagem(msg, key)
-                plot_waveform(data, frame, "Forma de onda do dado recebido!")
+                proc_decod = decodifica_mensagem(msg, key)
+                plot_waveform(data, frame, "Forma de onda do dado recebido!", root)
                 update_text_area(proc_decod, text_area)
     thread = threading.Thread(target=accept_connections)
     thread.daemon = True
@@ -32,6 +51,11 @@ def on_start_server_button():
 def on_closing():
     plt.close()
     root.destroy()
+
+def pega_ip():
+    hostname = socket.gethostname()
+    ip_adress = socket.gethostbyname(hostname)
+    return ip_adress
 
 # Configuração da interface gráfica
 root = tk.Tk()

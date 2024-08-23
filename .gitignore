@@ -35,3 +35,4 @@ build/sender/localpycs/pyimod02_importers.pyc
 build/sender/localpycs/pyimod03_ctypes.pyc
 build/sender/localpycs/pyimod04_pywin32.pyc
 build/sender/localpycs/struct.pyc
+__pycache__/common_imports.cpython-312.pyc

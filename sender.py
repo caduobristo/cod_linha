@@ -1,7 +1,48 @@
-import tkinter as tk
-from tkinter import scrolledtext
-from funcoes import send_data
-import matplotlib.pyplot as plt
+from common_imports import *
+
+def string_to_binary(string):
+    binary = ''.join(format(ord(char), '08b') for char in string)
+    return binary
+
+def ami_encode(data):
+    last_positive = True
+    encoded = ''
+
+    for bit in data:
+        if bit == '0':
+            encoded += '0'
+        elif bit == '1':
+            if last_positive:
+                encoded += '1'
+            else:
+                encoded += '-1'
+            last_positive = not last_positive
+    
+    return encoded
+
+def codifica_mensagem(msg: str):
+    caracteres = string.ascii_letters + string.digits + string.punctuation
+    key = ''.join(random.choice(caracteres) for _ in range(10))
+    msg_crypt = encrypt_decrypt(msg, key)
+    msg_binaria = string_to_binary(msg_crypt)
+    msg_codificada = ami_encode(msg_binaria)
+
+    proc_cod = f"Mensagem: {msg}\nMensagem criptografada: {msg_crypt}\nMensagem binária: {msg_binaria}\nMensagem codificada: {msg_codificada}\n"
+
+    return msg_codificada, key, proc_cod
+
+def send_data(host: str, port: str, msg: str, text_area, frame):
+    msg_codificada, key, proc_cod = codifica_mensagem(msg)
+    data = f"{msg_codificada}|{key}"
+
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
+            client_socket.connect((host, port))
+            client_socket.sendall(data.encode())
+            update_text_area(proc_cod, text_area)
+            plot_waveform(data, frame, "0 de onda do dado enviado!", root)
+    except ConnectionRefusedError:
+        update_text_area("Conexão negada!", text_area)
 
 def on_send_message_button():
     host = entry_host.get()
